@@ -24,6 +24,14 @@ public class LinearTeleOp extends LinearOpMode {
         motor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);    // run motor at target velocity, requires encoder
         // other RunMode options RUN_WITHOUT_ENCODER | STOP_AND_RESET_ENCODER)
 
+        DcMotorEx liftArm = hardwareMap.get(DcMotorEx.class, "lift_arm");   // enhanced motor functionality
+        liftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        int degrees = 1000/4; // motor has 1000 ticks per rotation. desired position is 90 degrees, which is a 1/4 rotation
+        int position = 0;
+
+        DcMotor intake = hardwareMap.dcMotor.get("inttake");    // shorthand motor declaration and initiation statement
+        intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         DcMotorEx motor2;
         motor2 = hardwareMap.get(DcMotorEx.class, "motor_two"); // map variable to configuration file name
 
@@ -49,7 +57,7 @@ public class LinearTeleOp extends LinearOpMode {
 
 
             servo1.setPosition(0.4);    // values from 0 to 1 inclusive.  sets initial servo position (e.g. 0.5 is halfway in range
-            servo2.setPower(0.85);  // values from 0 to 1 inclusive
+            servo2.setPower(0.85);  // values from 0 to 1 inclusive to define power for continuous servo movement; similar to motors
 
 
             if (gamepad2.a) {
@@ -97,7 +105,19 @@ public class LinearTeleOp extends LinearOpMode {
                 }
             }
 
-        }
 
+            liftArm.setPower(0.5);  // run motor at 50% power
+            liftArm.setTargetPosition(degrees);
+            liftArm.setTargetPositionTolerance(3);  // allows for a position range to account for movement jitter, in this case 247 - 25 tpr
+            liftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);   // move liftarm to desired position (90 degrees)
+
+            position = liftArm.getCurrentPosition();    // returns the current reading of the motor encoder
+
+
+            intake.setPower(0.5);   // by using encoder, the motor will attempt to regulate a constant power level, independent of battery level
+                                    // otherwise, there would be variation in power level base on battery level.
+
+
+        }
     }
 }
