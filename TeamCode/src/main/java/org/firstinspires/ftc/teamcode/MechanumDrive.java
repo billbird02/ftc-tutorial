@@ -1,5 +1,6 @@
 /*
     From FTC Team 7477 - FTC Programming Episode 8: Mechanum Drive
+                     and FTC Programming Episode 9: Scaling Drive Powers Proportionally
  */
 package org.firstinspires.ftc.teamcode;
 
@@ -24,7 +25,7 @@ public class MechanumDrive extends LinearOpMode {
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);  // using encoder for increased accuracy
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);  // using encoder for constant power resulting in increased accuracy
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -49,7 +50,28 @@ public class MechanumDrive extends LinearOpMode {
             rLeftPower = drive + turn - strafe;
             rRightPower = drive - turn + strafe;
 
+            double [] adjPower = scalePower(fLeftPower, fRightPower, rLeftPower, rRightPower);
+            frontLeft.setPower(adjPower[0]);
+            frontRight.setPower(adjPower[1]);
+            rearLeft.setPower(adjPower[2]);
+            rearRight.setPower(adjPower[3]);
         }
+    }
+
+    public double[] scalePower(double fLeftPower, double fRightPower, double rLeftPower, double rRightPower) {
+    // function to determine max power and scale proportionally.  returns an array.
+
+        // determine maximum power value of the four motors
+        double max = Math.max(Math.abs(fLeftPower), Math.max(Math.abs(fRightPower), Math.max(Math.abs(rLeftPower), Math.abs(rRightPower))));
+
+        if (max > 1) {  // divide power level of each motor by max power to scale proportionally
+            fLeftPower /= max;
+            fRightPower /= max;
+            rLeftPower /= max;
+            rRightPower /= max;
+        }
+
+        return new double [] { fLeftPower, fRightPower, rLeftPower, rRightPower };
     }
 }
 
