@@ -1,8 +1,8 @@
 /*
-From FTC Team 7477 - FTC Programming Episode 7: Programming a Tank Drive Train
+    From FTC Team 7477 - FTC Programming Episode 7: Programming a Tank Drive Train
 
-Tank Drive using 4 drive motors each driving a wheel.  Can simplify to 2 drive motors with each driving
-a pair of wheels connected with a chain system.
+    Tank Drive using 4 drive motors each driving a wheel.  Can simplify to 2 drive motors with each driving
+    a pair of wheels connected with a chain system.
  */
 package org.firstinspires.ftc.teamcode;
 
@@ -20,6 +20,7 @@ public class TankDrive extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+
         // initialization code
         DcMotor frontLeft = hardwareMap.get(DcMotor.class, "fLeft");
         DcMotor frontRight = hardwareMap.get(DcMotor.class, "fRight");
@@ -39,7 +40,7 @@ public class TankDrive extends LinearOpMode {
         while (opModeIsActive()) {
             // tank drive has 2 components: DRIVE (i.e., forward and reverse) by setting the same power to each motor pair and TURN
             // DRIVE forward and reverse using gamepad left joystick y axis
-            drive = -gamepad1.left_stick_y; // set as negative so pushing joystick forward is a positive value.
+            drive = -gamepad1.left_stick_y; // set as negative so pushing joystick forward is a positive value
 
             // TURN right and left using gamepad right joystick x axis
             turn = gamepad1.right_stick_x;
