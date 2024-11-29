@@ -14,15 +14,15 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class MechanumDrive extends LinearOpMode {
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
 
-        // initialization code
+        /* Variable initialization used for drivetrain control */
         DcMotor frontLeft = hardwareMap.get(DcMotor.class, "fLeft");
         DcMotor frontRight = hardwareMap.get(DcMotor.class, "fRight");
         DcMotor rearLeft = hardwareMap.get(DcMotor.class, "rLeft");
         DcMotor rearRight = hardwareMap.get(DcMotor.class, "rRight");
 
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);   // set one motor pair to run backwards since motor orientation is mirrored.
         rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);  // using encoder for constant power resulting in increased accuracy
@@ -30,27 +30,31 @@ public class MechanumDrive extends LinearOpMode {
         rearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        double drive, turn, strafe; // DRIVE forward and reverse, STRAFE is left and right
-        double fLeftPower, fRightPower, rLeftPower, rRightPower;
+        // Send telemetry message to signify robot waiting.
+        // This telemetry line is especially important when using the IMU,
+        // as the IMU can take a couple of seconds to initialize and this line executes when IMU initialization is complete.
+        telemetry.addLine("Robot Ready.");
+        telemetry.update();
 
         waitForStart();
 
+        /* Run until the driver presses stop */
         while (opModeIsActive()) {
 
-            // DRIVE = left joystick y axis
-            drive = -gamepad1.left_stick_y; // set as negative so pushing joystick forward is a positive value
+            // DRIVE = left joystick y axis (robot centric)
+            double drive = -gamepad1.left_stick_y; // set as negative so pushing joystick forward is a positive value
             // TURN = right joystick x axis
-            turn = gamepad1.right_stick_x;
+            double turn = gamepad1.right_stick_x;
             // STRAFE = left joystick x axis
-            strafe = gamepad1.left_stick_x;
+            double strafe = gamepad1.left_stick_x;
 
             // mechanum drive reference: https://cdn11.bigcommerce.com/s-x56mtydx1w/images/stencil/original/products/2234/13280/3209-0001-0007-Product-Insight-2__06708__33265.1725633323.png?c=1
-            fLeftPower = drive + turn + strafe;
-            fRightPower = drive - turn - strafe;
-            rLeftPower = drive + turn - strafe;
-            rRightPower = drive - turn + strafe;
+            double fLeftPower = drive + turn + strafe;
+            double fRightPower = drive - turn - strafe;
+            double rLeftPower = drive + turn - strafe;
+            double rRightPower = drive - turn + strafe;
 
-            double [] adjPower = scalePower(fLeftPower, fRightPower, rLeftPower, rRightPower);
+            double[] adjPower = scalePower(fLeftPower, fRightPower, rLeftPower, rRightPower);
             frontLeft.setPower(adjPower[0]);
             frontRight.setPower(adjPower[1]);
             rearLeft.setPower(adjPower[2]);
@@ -64,14 +68,14 @@ public class MechanumDrive extends LinearOpMode {
         // determine maximum power value of the four motors
         double max = Math.max(Math.abs(fLeftPower), Math.max(Math.abs(fRightPower), Math.max(Math.abs(rLeftPower), Math.abs(rRightPower))));
 
-        if (max > 1) {  // divide power level of each motor by max power to scale proportionally
+        if (max > 1) {  // proportionally scale motor power levels so values do not exceed +/- 1.0
             fLeftPower /= max;
             fRightPower /= max;
             rLeftPower /= max;
             rRightPower /= max;
         }
 
-        return new double [] { fLeftPower, fRightPower, rLeftPower, rRightPower };
+        return new double[] { fLeftPower, fRightPower, rLeftPower, rRightPower };
     }
 }
 
