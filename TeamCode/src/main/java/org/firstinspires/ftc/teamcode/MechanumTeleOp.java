@@ -1,5 +1,5 @@
 /*
-    From FTC Team 7477 - FTC Programming Episode 8: Mechanum Drive
+    From FTC Team 7477 - FTC Programming Episode 8: Mechanum Drive (robot centric)
                      and FTC Programming Episode 9: Scaling Drive Powers Proportionally
  */
 package org.firstinspires.ftc.teamcode;
@@ -9,9 +9,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name="Mechanum Drive", group="FTC Tutorial")
+@TeleOp(name="Mechanum TeleOp", group="FTC Tutorial")
 //@Disabled
-public class MechanumDrive extends LinearOpMode {
+public class MechanumTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() {
@@ -38,6 +38,8 @@ public class MechanumDrive extends LinearOpMode {
 
         waitForStart();
 
+        if (isStopRequested()) return;
+
         /* Run until the driver presses stop */
         while (opModeIsActive()) {
 
@@ -46,14 +48,19 @@ public class MechanumDrive extends LinearOpMode {
             // TURN = right joystick x axis
             double turn = gamepad1.right_stick_x;
             // STRAFE = left joystick x axis
-            double strafe = gamepad1.left_stick_x;
+            double strafe = gamepad1.left_stick_x * 1.1;    // multiplier to counteract imperfect strafing, adjustable based on driver preference
 
-            // mechanum drive reference: https://cdn11.bigcommerce.com/s-x56mtydx1w/images/stencil/original/products/2234/13280/3209-0001-0007-Product-Insight-2__06708__33265.1725633323.png?c=1
+            // the left Y component (y or DRIVE) is added to all wheels, the right X (rx or TURN) is added to the left wheels and subtracted from
+            // the right, and the left X component (x or STRAFE) is added to diagonal motors pairs (i.e., left front and right rear) and subtracted
+            // from the opposite diagonal pair (i.e., right front and left rear).
+            // see mechanum drive reference: https://cdn11.bigcommerce.com/s-x56mtydx1w/images/stencil/original/products/2234/13280/3209-0001-0007-Product-Insight-2__06708__33265.1725633323.png?c=1
             double fLeftPower = drive + turn + strafe;
             double fRightPower = drive - turn - strafe;
             double rLeftPower = drive + turn - strafe;
             double rRightPower = drive - turn + strafe;
 
+            // determine the largest motor power (absolute value), then scale power to ensure all the powers maintain the same ratio,
+            // but only if at least one is out of the range [-1, 1]
             double[] adjPower = scalePower(fLeftPower, fRightPower, rLeftPower, rRightPower);
             frontLeft.setPower(adjPower[0]);
             frontRight.setPower(adjPower[1]);
@@ -78,4 +85,3 @@ public class MechanumDrive extends LinearOpMode {
         return new double[] { fLeftPower, fRightPower, rLeftPower, rRightPower };
     }
 }
-
