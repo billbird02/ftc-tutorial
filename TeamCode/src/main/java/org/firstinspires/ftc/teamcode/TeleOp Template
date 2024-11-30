@@ -1,0 +1,35 @@
+/*
+    FTC TeleOp Template | November 27, 2024
+ */
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+@TeleOp(name="Program Name", group="Group Name")    // program name displayed on driver station
+//@Disabled
+public class myTeleOp extends LinearOpMode {
+
+    @Override
+    public void runOpMode() {
+
+        /* Variable initialization */
+
+
+        // Send telemetry message to signify robot waiting.
+        // This telemetry line is especially important when using the IMU,
+        // as the IMU can take a couple of seconds to initialize and this line executes when IMU initialization is complete.
+        telemetry.addLine("Robot Ready.");
+        telemetry.update();
+
+        waitForStart();
+
+        if (isStopRequested()) return;
+
+        /* Run until the driver presses stop */
+        while (opModeIsActive()) {
+
+
+        }
+    }
+}
