@@ -9,9 +9,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name="Mechanum TeleOp", group="FTC Tutorial")
+@TeleOp(name="Mecanum TeleOp", group="Tutorial")
 //@Disabled
-public class MechanumTeleOp extends LinearOpMode {
+public class MecanumTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() {

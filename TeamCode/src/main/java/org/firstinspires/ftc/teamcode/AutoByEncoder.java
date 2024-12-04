@@ -61,7 +61,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto Drive By Encoder", group="FTC Tutorial")
+@Autonomous(name="Auto Drive By Encoder", group="Tutorial")
 @Disabled
 public class AutoByEncoder extends LinearOpMode {
 
