@@ -17,18 +17,18 @@ public class MecanumTeleOp extends LinearOpMode {
     public void runOpMode() {
 
         /* Variable initialization used for drivetrain control */
-        DcMotor frontLeft = hardwareMap.get(DcMotor.class, "fLeft");
-        DcMotor frontRight = hardwareMap.get(DcMotor.class, "fRight");
-        DcMotor rearLeft = hardwareMap.get(DcMotor.class, "rLeft");
-        DcMotor rearRight = hardwareMap.get(DcMotor.class, "rRight");
-
+        DcMotor frontLeft = hardwareMap.get(DcMotor.class, "front_left");
+        DcMotor frontRight = hardwareMap.get(DcMotor.class, "front_right");
+        DcMotor backLeft = hardwareMap.get(DcMotor.class, "back_left");
+        DcMotor backRight = hardwareMap.get(DcMotor.class, "back_right");
+        
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);   // set one motor pair to run backwards since motor orientation is mirrored.
-        rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);  // using encoder for constant power resulting in increased accuracy
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to signify robot waiting.
         // This telemetry line is especially important when using the IMU,
@@ -64,8 +64,8 @@ public class MecanumTeleOp extends LinearOpMode {
             double[] adjPower = scalePower(fLeftPower, fRightPower, rLeftPower, rRightPower);
             frontLeft.setPower(adjPower[0]);
             frontRight.setPower(adjPower[1]);
-            rearLeft.setPower(adjPower[2]);
-            rearRight.setPower(adjPower[3]);
+            backLeft.setPower(adjPower[2]);
+            backRight.setPower(adjPower[3]);
         }
     }
 
