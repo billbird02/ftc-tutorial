@@ -1,34 +1,41 @@
 /*
     From FTC Team 7477 - FTC Programming Episode 8: Mechanum Drive (robot centric)
-                     and FTC Programming Episode 9: Scaling Drive Powers Proportionally
+                         FTC Programming Episode 9: Scaling Drive Powers Proportionally
+
+    and https://gm0.org/en/latest/docs/software/tutorials/mecanum-drive.html#robot-centric-final-sample-code
  */
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name="Mecanum TeleOp", group="Tutorial")
-//@Disabled
-public class MecanumTeleOp extends LinearOpMode {
-
+@TeleOp(name="Mecanum TeleOp (Robot Centric)", group="Test")
+public class RobotCentricMecanumTeleOp extends LinearOpMode {
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
 
-        /* Variable initialization used for drivetrain control */
-        DcMotor frontLeft = hardwareMap.get(DcMotor.class, "front_left");
-        DcMotor frontRight = hardwareMap.get(DcMotor.class, "front_right");
-        DcMotor backLeft = hardwareMap.get(DcMotor.class, "back_left");
-        DcMotor backRight = hardwareMap.get(DcMotor.class, "back_right");
-        
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);   // set one motor pair to run backwards since motor orientation is mirrored.
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        // Initialize the hardware variables. Note that the strings used here as parameters
+        // to 'get' must correspond to the names assigned during the robot configuration
+        // step (using the FTC Robot Controller app on the phone).
+        DcMotor frontLeftDrive = hardwareMap.dcMotor.get("front_left");
+        DcMotor backLeftDrive = hardwareMap.dcMotor.get("back_left");
+        DcMotor frontRightDrive = hardwareMap.dcMotor.get("front_right");
+        DcMotor backRightDrive = hardwareMap.dcMotor.get("back_right");
 
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);  // using encoder for constant power resulting in increased accuracy
-        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
+        // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
+        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
+        // TODO: Make sure all motors are facing the correct direction. Go one at a time.
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);  // using encoder for constant power resulting in increased accuracy
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to signify robot waiting.
         // This telemetry line is especially important when using the IMU,
@@ -53,7 +60,7 @@ public class MecanumTeleOp extends LinearOpMode {
             // the left Y component (y or DRIVE) is added to all wheels, the right X (rx or TURN) is added to the left wheels and subtracted from
             // the right, and the left X component (x or STRAFE) is added to diagonal motors pairs (i.e., left front and right rear) and subtracted
             // from the opposite diagonal pair (i.e., right front and left rear).
-            // see mechanum drive reference: https://cdn11.bigcommerce.com/s-x56mtydx1w/images/stencil/original/products/2234/13280/3209-0001-0007-Product-Insight-2__06708__33265.1725633323.png?c=1
+            // see mecanum drive reference: https://cdn11.bigcommerce.com/s-x56mtydx1w/images/stencil/original/products/2234/13280/3209-0001-0007-Product-Insight-2__06708__33265.1725633323.png?c=1
             double fLeftPower = drive + turn + strafe;
             double fRightPower = drive - turn - strafe;
             double rLeftPower = drive + turn - strafe;
@@ -62,10 +69,10 @@ public class MecanumTeleOp extends LinearOpMode {
             // determine the largest motor power (absolute value), then scale power to ensure all the powers maintain the same ratio,
             // but only if at least one is out of the range [-1, 1]
             double[] adjPower = scalePower(fLeftPower, fRightPower, rLeftPower, rRightPower);
-            frontLeft.setPower(adjPower[0]);
-            frontRight.setPower(adjPower[1]);
-            backLeft.setPower(adjPower[2]);
-            backRight.setPower(adjPower[3]);
+            frontLeftDrive.setPower(adjPower[0]);
+            frontRightDrive.setPower(adjPower[1]);
+            backLeftDrive.setPower(adjPower[2]);
+            backRightDrive.setPower(adjPower[3]);
         }
     }
 
