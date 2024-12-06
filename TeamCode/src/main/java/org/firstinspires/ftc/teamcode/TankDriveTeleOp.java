@@ -14,9 +14,9 @@ import com.qualcomm.robotcore.util.Range;
 
 import java.io.CharArrayWriter;
 
-@TeleOp(name="Tank Drive", group="FTC Tutorial")
+@TeleOp(name="Tank Drive", group="Tutorial")
 //@Disabled
-public class TankDrive extends LinearOpMode {
+public class TankDriveTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
