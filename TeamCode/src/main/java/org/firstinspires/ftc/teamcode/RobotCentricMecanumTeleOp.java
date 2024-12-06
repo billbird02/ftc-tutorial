@@ -28,19 +28,21 @@ public class RobotCentricMecanumTeleOp extends LinearOpMode {
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         // TODO: Make sure all motors are facing the correct direction. Go one at a time.
-        frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE;
+        frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        /*
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);  // using encoder for constant power resulting in increased accuracy
         frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+         */
 
         // Send telemetry message to signify robot waiting.
-        // This telemetry line is especially important when using the IMU,
-        // as the IMU can take a couple of seconds to initialize and this line executes when IMU initialization is complete.
+        // This telemetry line is especially important when using the IMU, as the IMU can take
+        // a couple of seconds to initialize and this line executes when IMU initialization is complete.
         telemetry.addLine("Robot Ready.");
         telemetry.update();
 
@@ -48,7 +50,7 @@ public class RobotCentricMecanumTeleOp extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        /* Run until the driver presses stop */
+        // Run until the driver presses stop
         while (opModeIsActive()) {
 
             // DRIVE = left joystick y axis (robot centric)

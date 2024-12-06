@@ -56,7 +56,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @Autonomous(name="Auto Drive By Time", group="Tutorial")
-@Disabled
+//@Disabled
 public class AutoDriveByTime extends LinearOpMode {
 
     // Declare OpMode members.
@@ -83,10 +83,15 @@ public class AutoDriveByTime extends LinearOpMode {
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Send telemetry message to signify robot waiting
         // This telemetry line is especially important when using the IMU,
@@ -108,7 +113,8 @@ public class AutoDriveByTime extends LinearOpMode {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
-        //? moveRobot(0, 0, 0);  // stop robot movement - is this necessary?
+        moveRobot(0, 0, 0);  // stop robot movement
+        sleep(1000);
 
         // Step 2:  Spin right for 1.3 seconds
         //! leftDrive.setPower(TURN_SPEED);
@@ -119,6 +125,8 @@ public class AutoDriveByTime extends LinearOpMode {
             telemetry.addData("Path", "Leg 2: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
+        moveRobot(0, 0, 0);  // stop robot movement
+        sleep(1000);
 
         // Step 3:  Drive Backward for 1 Second
         //! leftDrive.setPower(-FORWARD_SPEED);
@@ -129,6 +137,8 @@ public class AutoDriveByTime extends LinearOpMode {
             telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
+        moveRobot(0, 0, 0);  // stop robot movement
+        sleep(1000);
 
         // Step 4:  Stop robot
         moveRobot(0, 0, 0);  // stop robot movement
