@@ -1,7 +1,7 @@
 /*
     Reference: https://gm0.org/en/latest/docs/software/tutorials/mecanum-drive.html#field-centric-final-sample-code
  */
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.tutorial;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -12,7 +12,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @TeleOp(name="Mecanum TeleOp (Field Centric)", group="Test")
-public class MecanumTeleOpFieldCentric extends LinearOpMode {
+public class FieldCentricMecanumTeleOp extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 

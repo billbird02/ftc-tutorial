@@ -4,7 +4,7 @@
 
     and https://gm0.org/en/latest/docs/software/tutorials/mecanum-drive.html#robot-centric-final-sample-code
  */
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.concept;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;

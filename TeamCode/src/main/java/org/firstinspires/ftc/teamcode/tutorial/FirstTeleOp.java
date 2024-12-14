@@ -1,7 +1,7 @@
 /*
 From FTC Team 7477 Youtube video series: https://youtu.be/ig9YUI4wu6c?si=GKPDrYQiAySjAnxz
  */
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.tutorial;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;

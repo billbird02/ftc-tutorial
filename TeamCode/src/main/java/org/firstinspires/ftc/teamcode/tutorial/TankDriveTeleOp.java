@@ -4,15 +4,13 @@
     Tank Drive using 4 drive motors each driving a wheel.  Can simplify to 2 drive motors with each driving
     a pair of wheels connected with a chain system.
  */
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.tutorial;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
-
-import java.io.CharArrayWriter;
 
 @TeleOp(name="Tank Drive", group="Tutorial")
 //@Disabled
