@@ -48,7 +48,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Test Drive Motors", group="Test")
+@TeleOp(name="Drive Motor Test", group="Competition")
 
 public class TestDriveMotors extends OpMode
 {
@@ -70,10 +70,10 @@ public class TestDriveMotors extends OpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        frontLeftDrive  = hardwareMap.get(DcMotor.class, "front_left");
-        backLeftDrive  = hardwareMap.get(DcMotor.class, "back_left");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "front_right");
-        backRightDrive = hardwareMap.get(DcMotor.class, "back_right");
+        frontLeftDrive  = hardwareMap.get(DcMotor.class, "frontLeft");
+        backLeftDrive  = hardwareMap.get(DcMotor.class, "backLeft");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "frontRight");
+        backRightDrive = hardwareMap.get(DcMotor.class, "backRight");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.

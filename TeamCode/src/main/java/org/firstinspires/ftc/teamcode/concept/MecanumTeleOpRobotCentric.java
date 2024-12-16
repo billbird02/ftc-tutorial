@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name="Mecanum TeleOp (Robot Centric)", group="Test")
+@TeleOp(name="Mecanum TeleOp (Robot Centric)", group="Concept")
 public class MecanumTeleOpRobotCentric extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@TeleOp(name="Mecanum TeleOp (Field Centric)", group="Test")
+@TeleOp(name="Mecanum TeleOp (Field Centric)", group="Concept")
 public class MecanumTeleOpFieldCentric extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

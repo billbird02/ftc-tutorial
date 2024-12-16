@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.tutorial;
+package org.firstinspires.ftc.teamcode.concept;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -54,7 +54,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto Drive By Time", group="Tutorial")
+@Autonomous(name="Auto Drive By Time", group="Concept")
 //@Disabled
 public class AutoDriveByTime extends LinearOpMode {
 
@@ -74,10 +74,10 @@ public class AutoDriveByTime extends LinearOpMode {
     public void runOpMode() {
 
         // Initialize the drive system variables.
-        frontLeft = hardwareMap.get(DcMotor.class, "front_left");
-        backLeft = hardwareMap.get(DcMotor.class, "back_left");
-        frontRight = hardwareMap.get(DcMotor.class, "front_right");
-        backRight = hardwareMap.get(DcMotor.class, "back_right");
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        backRight = hardwareMap.get(DcMotor.class, "backRight");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.

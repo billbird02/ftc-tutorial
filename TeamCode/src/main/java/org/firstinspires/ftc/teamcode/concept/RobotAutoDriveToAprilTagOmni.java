@@ -62,7 +62,7 @@ import java.util.concurrent.TimeUnit;
  * To reduce any motion blur (which will interrupt the detection process) the Camera exposure is reduced to a very low value (5mS)
  * You can determine the best Exposure and Gain values by using the ConceptAprilTagOptimizeExposure OpMode in this Samples folder.
  *
- * The code assumes a Robot Configuration with motors named: leftfront_drive and rightfront_drive, leftback_drive and rightback_drive.
+ * The code assumes a Robot Configuration with motors named: frontLeft and frontRight, backLeft and bckRight.
  * The motor directions must be set so a positive power goes forward on all wheels.
  * This sample assumes that the current game AprilTag Library (usually for the current season) is being loaded by default,
  * so you should choose to approach a valid tag ID.
@@ -87,7 +87,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 @TeleOp(name="Omni Drive To AprilTag", group = "Concept")
-@Disabled
+//@Disabled
 public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
 {
     // Adjust these numbers to suit your robot.
@@ -104,10 +104,10 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
     final double MAX_AUTO_STRAFE= 0.5;   //  Clip the strafing speed to this max value (adjust for your robot)
     final double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
 
-    private DcMotor leftFrontDrive   = null;  //  Used to control the left front drive wheel
-    private DcMotor rightFrontDrive  = null;  //  Used to control the right front drive wheel
-    private DcMotor leftBackDrive    = null;  //  Used to control the left back drive wheel
-    private DcMotor rightBackDrive   = null;  //  Used to control the right back drive wheel
+    private DcMotor frontLeftDrive   = null;  //  Used to control the left front drive wheel
+    private DcMotor frontRightDrive  = null;  //  Used to control the right front drive wheel
+    private DcMotor backLeftDrive    = null;  //  Used to control the left back drive wheel
+    private DcMotor backRightDrive   = null;  //  Used to control the right back drive wheel
 
     private static final boolean USE_WEBCAM = true;  // Set true to use a webcam, or false for a phone camera
     private static final int DESIRED_TAG_ID = -1;     // Choose the tag you want to approach or set to -1 for ANY tag.
@@ -128,25 +128,25 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must match the names assigned during the robot configuration.
         // step (using the FTC Robot Controller app on the phone).
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftfront_drive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightfront_drive");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "leftback_drive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "rightback_drive");
+        frontLeftDrive  = hardwareMap.get(DcMotor.class, "frontLeft");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "frontRight");
+        backLeftDrive  = hardwareMap.get(DcMotor.class, "backLeft");
+        backRightDrive = hardwareMap.get(DcMotor.class, "backRight");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
 
         if (USE_WEBCAM)
             setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
 
         // Wait for driver to press start
         telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
-        telemetry.addData(">", "Touch START to start OpMode");
+        telemetry.addData(">", "Press START to start OpMode");
         telemetry.update();
         waitForStart();
 
@@ -203,7 +203,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
                 telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
             } else {
 
-                // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
+                // drive using manual POV Joystick mode.  Slow things down to make the robot more controllable.
                 drive  = -gamepad1.left_stick_y  / 2.0;  // Reduce drive rate to 50%.
                 strafe = -gamepad1.left_stick_x  / 2.0;  // Reduce strafe rate to 50%.
                 turn   = -gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
@@ -228,28 +228,28 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
      */
     public void moveRobot(double x, double y, double yaw) {
         // Calculate wheel powers.
-        double leftFrontPower    =  x -y -yaw;
-        double rightFrontPower   =  x +y +yaw;
-        double leftBackPower     =  x +y -yaw;
-        double rightBackPower    =  x -y +yaw;
+        double frontLeftPower    =  x -y -yaw;
+        double frontRightPower   =  x +y +yaw;
+        double backLeftPower     =  x +y -yaw;
+        double backRightPower    =  x -y +yaw;
 
         // Normalize wheel powers to be less than 1.0
-        double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-        max = Math.max(max, Math.abs(leftBackPower));
-        max = Math.max(max, Math.abs(rightBackPower));
+        double max = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower));
+        max = Math.max(max, Math.abs(backLeftPower));
+        max = Math.max(max, Math.abs(backRightPower));
 
         if (max > 1.0) {
-            leftFrontPower /= max;
-            rightFrontPower /= max;
-            leftBackPower /= max;
-            rightBackPower /= max;
+            frontLeftPower /= max;
+            frontRightPower /= max;
+            backLeftPower /= max;
+            backRightPower /= max;
         }
 
         // Send powers to the wheels.
-        leftFrontDrive.setPower(leftFrontPower);
-        rightFrontDrive.setPower(rightFrontPower);
-        leftBackDrive.setPower(leftBackPower);
-        rightBackDrive.setPower(rightBackPower);
+        frontLeftDrive.setPower(frontLeftPower);
+        frontRightDrive.setPower(frontRightPower);
+        backLeftDrive.setPower(backLeftPower);
+        backRightDrive.setPower(backRightPower);
     }
 
     /**

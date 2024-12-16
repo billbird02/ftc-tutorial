@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp (name = "First TeleOp") // adds TeleOp library import and sets program name on control hub
+@TeleOp (name = "First TeleOp", group = "Tutorial") // adds TeleOp library import and sets program name on control hub
 @Disabled
 public class FirstTeleOp extends LinearOpMode {
     @Override
