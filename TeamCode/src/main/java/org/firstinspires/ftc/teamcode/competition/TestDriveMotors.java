@@ -70,10 +70,10 @@ public class TestDriveMotors extends OpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        frontLeftDrive  = hardwareMap.get(DcMotor.class, "frontLeft");
-        backLeftDrive  = hardwareMap.get(DcMotor.class, "backLeft");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "frontRight");
-        backRightDrive = hardwareMap.get(DcMotor.class, "backRight");
+        frontLeftDrive  = hardwareMap.get(DcMotor.class, "front_left");
+        backLeftDrive  = hardwareMap.get(DcMotor.class, "back_left");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "front_right");
+        backRightDrive = hardwareMap.get(DcMotor.class, "back_right");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.

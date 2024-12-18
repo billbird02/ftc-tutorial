@@ -66,7 +66,7 @@ public class AutoDriveByTime extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    static final double DRIVE_SPEED = 0.6;
+    static final double FORWARD_SPEED = 0.6;
     static final double STRAFE_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
 
@@ -74,10 +74,10 @@ public class AutoDriveByTime extends LinearOpMode {
     public void runOpMode() {
 
         // Initialize the drive system variables.
-        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
-        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
-        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
-        backRight = hardwareMap.get(DcMotor.class, "backRight");
+        frontLeft = hardwareMap.get(DcMotor.class, "front_left");
+        backLeft = hardwareMap.get(DcMotor.class, "back_left");
+        frontRight = hardwareMap.get(DcMotor.class, "front_right");
+        backRight = hardwareMap.get(DcMotor.class, "back_right");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -104,11 +104,9 @@ public class AutoDriveByTime extends LinearOpMode {
         // Step through each leg of the path, ensuring that the OpMode has not been stopped along the way.
 
         // Step 1:  Drive forward for 2 seconds
-        //! leftDrive.setPower(FORWARD_SPEED);
-        //! rightDrive.setPower(FORWARD_SPEED);
         runtime.reset();    // start timer
         while (opModeIsActive() && (runtime.seconds() < 2.0)) {
-            moveRobot(DRIVE_SPEED, 0, 0); // mimics gamepad controls
+            moveRobot(FORWARD_SPEED, 0, 0); // mimics gamepad controls
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -116,8 +114,6 @@ public class AutoDriveByTime extends LinearOpMode {
         sleep(1000);
 
         // Step 2:  Spin right for 1.3 seconds
-        //! leftDrive.setPower(TURN_SPEED);
-        //! rightDrive.setPower(-TURN_SPEED);
         runtime.reset();    // reset timer for next step
         while (opModeIsActive() && (runtime.seconds() < 1.2)) {
             moveRobot(0, 0, TURN_SPEED); // mimics gamepad controls
@@ -128,11 +124,9 @@ public class AutoDriveByTime extends LinearOpMode {
         sleep(1000);
 
         // Step 3:  Drive Backward for 1 Second
-        //! leftDrive.setPower(-FORWARD_SPEED);
-        //! rightDrive.setPower(-FORWARD_SPEED);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 1.0)) {
-            moveRobot(-DRIVE_SPEED, 0, 0); // mimics gamepad controls
+            moveRobot(-FORWARD_SPEED, 0, 0); // mimics gamepad controls
             telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -147,15 +141,15 @@ public class AutoDriveByTime extends LinearOpMode {
         sleep(1000);
     }
 
-    public void moveRobot(double x, double y, double yaw) {
+    public void moveRobot(double forward, double strafe, double turn) {
         // function to move robot along desired axis, mimicking gamepad control
         // positive values of x move forward, positive values of y strafe to the right, positive values of yaw rotate clockwise
 
         // calculate wheel powers
-        double frontLeftPower    =  x -y -yaw;
-        double frontRightPower   =  x +y +yaw;
-        double backLeftPower     =  x +y -yaw;
-        double backRightPower    =  x -y +yaw;
+        double frontLeftPower    =  forward -strafe -turn;
+        double frontRightPower   =  forward +strafe +turn;
+        double backLeftPower     =  forward +strafe -turn;
+        double backRightPower    =  forward -strafe +turn;
 
         // normalize wheel powers to not exceed +/- 1.0 range
         double max = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower));
