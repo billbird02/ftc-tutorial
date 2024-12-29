@@ -56,10 +56,10 @@ public class TestDriveMotors extends OpMode
     private ElapsedTime runtime = new ElapsedTime();
 
     // Declare drive motors
-    private DcMotor frontLeftDrive = null;
-    private DcMotor backLeftDrive = null;
-    private DcMotor frontRightDrive = null;
-    private DcMotor backRightDrive = null;
+    private DcMotor frontLeftMotor = null;
+    private DcMotor backLeftMotor = null;
+    private DcMotor frontRightMotor = null;
+    private DcMotor backRightMotor = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -70,19 +70,30 @@ public class TestDriveMotors extends OpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        frontLeftDrive  = hardwareMap.get(DcMotor.class, "front_left");
-        backLeftDrive  = hardwareMap.get(DcMotor.class, "back_left");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "front_right");
-        backRightDrive = hardwareMap.get(DcMotor.class, "back_right");
+        frontLeftMotor  = hardwareMap.get(DcMotor.class, "front_left");
+        backLeftMotor  = hardwareMap.get(DcMotor.class, "back_left");
+        frontRightMotor = hardwareMap.get(DcMotor.class, "front_right");
+        backRightMotor = hardwareMap.get(DcMotor.class, "back_right");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
-        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
+        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips.
         // TODO: Make sure all motors are facing the correct direction. Go one at a time.
         //frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         //backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        //frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        //backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        // Reset the motor encoder so that it reads zero ticks
+        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // Turn the motor back on, required if you use STOP_AND_RESET_ENCODER
+        // Note, RUN_WITHOUT_ENCODER does not disable the encoder; instead tells the SDK not to use the motor encoder for built-in velocity control.
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Notify the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -113,28 +124,28 @@ public class TestDriveMotors extends OpMode
         // COLLECT INPUTS
         // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
         double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-        double lateral =  -gamepad1.right_stick_x;
-        double yaw     =  -gamepad1.left_stick_x;
+        double lateral =  gamepad1.right_stick_x;
+        double yaw     =  gamepad1.left_stick_x * 1.1;
 
         // DRIVE EQUATIONS
         // Combine the joystick requests for each axis-motion to determine each wheel's power.
         // Set up a variable for each drive wheel to save the power level for telemetry.
-        double leftFrontPower  = axial + lateral + yaw;
-        double rightFrontPower = axial - lateral - yaw;
-        double leftBackPower   = axial - lateral + yaw;
-        double rightBackPower  = axial + lateral - yaw;
+        double frontLeftPower  = axial + lateral + yaw;
+        double backLeftPower   = axial - lateral + yaw;
+        double frontRightPower = axial - lateral - yaw;
+        double backRightPower  = axial + lateral - yaw;
 
         // Normalize the values so no wheel power exceeds 100%
         // This ensures that the robot maintains the desired motion.
-        max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-        max = Math.max(max, Math.abs(leftBackPower));
-        max = Math.max(max, Math.abs(rightBackPower));
+        max = Math.max(Math.abs(frontLeftPower), Math.abs(backLeftPower));
+        max = Math.max(max, Math.abs(frontRightPower));
+        max = Math.max(max, Math.abs(backRightPower));
 
         if (max > 1.0) {
-            leftFrontPower  /= max;
-            rightFrontPower /= max;
-            leftBackPower   /= max;
-            rightBackPower  /= max;
+            frontLeftPower  /= max;
+            backLeftPower   /= max;
+            frontRightPower /= max;
+            backRightPower  /= max;
         }
 
         // Test your motor directions. Each button should make the corresponding motor run FORWARD.
@@ -144,21 +155,30 @@ public class TestDriveMotors extends OpMode
         //      the setDirection() calls above.
         // Once the correct motors move in the correct direction re-comment this code.
 
-        leftFrontPower  = gamepad1.x ? 0.4 : 0.0;  // X gamepad
-        leftBackPower   = gamepad1.a ? 0.4 : 0.0;  // A gamepad
-        rightFrontPower = gamepad1.y ? 0.4 : 0.0;  // Y gamepad
-        rightBackPower  = gamepad1.b ? 0.4 : 0.0;  // B gamepad
+        frontLeftPower  = gamepad1.x ? 0.4 : 0.0;  // X gamepad
+        backLeftPower   = gamepad1.a ? 0.4 : 0.0;  // A gamepad
+        frontRightPower = gamepad1.y ? 0.4 : 0.0;  // Y gamepad
+        backRightPower  = gamepad1.b ? 0.4 : 0.0;  // B gamepad
 
         // WRITE EFFECTORS
-        frontLeftDrive.setPower(leftFrontPower);
-        frontRightDrive.setPower(rightFrontPower);
-        backLeftDrive.setPower(leftBackPower);
-        backRightDrive.setPower(rightBackPower);
+        frontLeftMotor.setPower(frontLeftPower);
+        frontRightMotor.setPower(frontRightPower);
+        backLeftMotor.setPower(backLeftPower);
+        backRightMotor.setPower(backRightPower);
+        
+        // Retrieve motor encoder position
+        int frontLeftEncoder = frontLeftMotor.getCurrentPosition();
+        int backLeftEncoder = frontLeftMotor.getCurrentPosition();
+        int frontRightEncoder = frontLeftMotor.getCurrentPosition();
+        int backRightEncoder = frontLeftMotor.getCurrentPosition();
 
         // UPDATE TELEMETRY
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Front left/right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-        telemetry.addData("Back  left/right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
+        telemetry.addData("Front left/right power", "%4.2f, %4.2f", frontLeftPower, frontRightPower);
+        telemetry.addData("Back  left/right power", "%4.2f, %4.2f", backLeftPower, backRightPower);
+
+        telemetry.addData("Front left/right encoder ticks", "%i, %i", frontLeftEncoder, frontRightEncoder );
+        telemetry.addData("Back left/right encoder ticks", "%i, %i", backLeftEncoder, backRightEncoder );
         telemetry.update();
     }
 
