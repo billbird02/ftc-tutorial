@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @TeleOp(name="Mecanum TeleOp (Field Centric)", group="Concept")
 public class MecanumTeleOpFieldCentric extends LinearOpMode {
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -24,22 +25,22 @@ public class MecanumTeleOpFieldCentric extends LinearOpMode {
         DcMotor frontRightDrive = hardwareMap.dcMotor.get("front_right");
         DcMotor backRightDrive = hardwareMap.dcMotor.get("back_right");
 
+        // Set drive speed modifier (full power = 1.0)
+        final double DRIVE_SPEED_ADJ = 0.6; // reduce drive rate to 60% of maximum
+
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         // TODO: Make sure all motors are facing the correct direction. Go one at a time.
-        frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        //frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        //backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Retrieve the IMU from the hardware map
         IMU imu = hardwareMap.get(IMU.class, "imu");
-        // Adjust the orientation parameters to match your robot
+        // Adjust the orientation parameters to match your robot (default: Logo UP / USB FORWARD)
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
-        // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
 
         waitForStart();
@@ -64,7 +65,7 @@ public class MecanumTeleOpFieldCentric extends LinearOpMode {
             double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
             double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
-            rotX = rotX * 1.1;  // Counteract imperfect strafing
+            rotX *= 1.1;  // counteract imperfect strafing
 
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,
@@ -75,10 +76,10 @@ public class MecanumTeleOpFieldCentric extends LinearOpMode {
             double frontRightPower = (rotY - rotX - rx) / denominator;
             double backRightPower = (rotY + rotX - rx) / denominator;
 
-            frontLeftDrive.setPower(frontLeftPower);
-            backLeftDrive.setPower(backLeftPower);
-            frontRightDrive.setPower(frontRightPower);
-            backRightDrive.setPower(backRightPower);
+            frontLeftDrive.setPower(frontLeftPower * DRIVE_SPEED_ADJ);
+            backLeftDrive.setPower(backLeftPower * DRIVE_SPEED_ADJ);
+            frontRightDrive.setPower(frontRightPower * DRIVE_SPEED_ADJ);
+            backRightDrive.setPower(backRightPower * DRIVE_SPEED_ADJ);
         }
     }
 }

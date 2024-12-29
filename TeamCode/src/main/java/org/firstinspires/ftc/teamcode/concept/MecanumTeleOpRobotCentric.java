@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp(name="Mecanum TeleOp (Robot Centric)", group="Concept")
 public class MecanumTeleOpRobotCentric extends LinearOpMode {
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -24,21 +25,21 @@ public class MecanumTeleOpRobotCentric extends LinearOpMode {
         DcMotor frontRightDrive = hardwareMap.dcMotor.get("front_right");
         DcMotor backRightDrive = hardwareMap.dcMotor.get("back_right");
 
+        // Set drive speed modifier (full power = 1.0)
+        final double DRIVE_SPEED_ADJ = 0.6; // reduce drive rate to 60% of maximum
+
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         // TODO: Make sure all motors are facing the correct direction. Go one at a time.
-        frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        //frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        //backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        /*
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);  // using encoder for constant power resulting in increased accuracy
+        // Use encoder for constant power resulting in increased accuracy
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-         */
 
         // Send telemetry message to signify robot waiting.
         // This telemetry line is especially important when using the IMU, as the IMU can take
@@ -54,7 +55,7 @@ public class MecanumTeleOpRobotCentric extends LinearOpMode {
         while (opModeIsActive()) {
 
             // DRIVE = left joystick y axis (robot centric)
-            double drive = -gamepad1.left_stick_y; // set as negative so pushing joystick forward is a positive value
+            double drive = -gamepad1.left_stick_y;  // set as negative so pushing joystick forward is a positive value
             // TURN = right joystick x axis
             double turn = gamepad1.right_stick_x;
             // STRAFE = left joystick x axis
@@ -71,11 +72,11 @@ public class MecanumTeleOpRobotCentric extends LinearOpMode {
 
             // determine the largest motor power (absolute value), then scale power to ensure all the powers maintain the same ratio,
             // but only if at least one is out of the range [-1, 1]
-            double[] adjPower = scalePower(fLeftPower, fRightPower, rLeftPower, rRightPower);
-            frontLeftDrive.setPower(adjPower[0]);
-            frontRightDrive.setPower(adjPower[1]);
-            backLeftDrive.setPower(adjPower[2]);
-            backRightDrive.setPower(adjPower[3]);
+            double[] motorPower = scalePower(fLeftPower, fRightPower, rLeftPower, rRightPower);
+            frontLeftDrive.setPower(motorPower[0] * DRIVE_SPEED_ADJ);
+            frontRightDrive.setPower(motorPower[1] * DRIVE_SPEED_ADJ);
+            backLeftDrive.setPower(motorPower[2] * DRIVE_SPEED_ADJ);
+            backRightDrive.setPower(motorPower[3] * DRIVE_SPEED_ADJ);
         }
     }
 

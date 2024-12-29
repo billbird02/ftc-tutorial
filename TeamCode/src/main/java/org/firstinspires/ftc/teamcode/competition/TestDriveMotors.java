@@ -79,10 +79,10 @@ public class TestDriveMotors extends OpMode
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         // TODO: Make sure all motors are facing the correct direction. Go one at a time.
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        //frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        //backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        //frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        //backRightDrive.setDirection(DcMotor.Direction.FORWARD);
 
         // Notify the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -144,10 +144,10 @@ public class TestDriveMotors extends OpMode
         //      the setDirection() calls above.
         // Once the correct motors move in the correct direction re-comment this code.
 
-        leftFrontPower  = gamepad1.x ? 1.0 : 0.0;  // X gamepad
-        leftBackPower   = gamepad1.a ? 1.0 : 0.0;  // A gamepad
-        rightFrontPower = gamepad1.y ? 1.0 : 0.0;  // Y gamepad
-        rightBackPower  = gamepad1.b ? 1.0 : 0.0;  // B gamepad
+        leftFrontPower  = gamepad1.x ? 0.4 : 0.0;  // X gamepad
+        leftBackPower   = gamepad1.a ? 0.4 : 0.0;  // A gamepad
+        rightFrontPower = gamepad1.y ? 0.4 : 0.0;  // Y gamepad
+        rightBackPower  = gamepad1.b ? 0.4 : 0.0;  // B gamepad
 
         // WRITE EFFECTORS
         frontLeftDrive.setPower(leftFrontPower);

@@ -66,9 +66,9 @@ public class AutoDriveByTime extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    static final double FORWARD_SPEED = 0.6;
-    static final double STRAFE_SPEED = 0.6;
-    static final double TURN_SPEED = 0.5;
+    static final double FORWARD_SPEED = 0.6;    // reduce drive rate to 60%
+    static final double STRAFE_SPEED = 0.6;    // reduce drive rate to 60%
+    static final double TURN_SPEED = 0.4;   // reduce turn rate to 40%
 
     @Override
     public void runOpMode() {
@@ -82,10 +82,8 @@ public class AutoDriveByTime extends LinearOpMode {
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        //frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        //backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
