@@ -155,10 +155,10 @@ public class TestDriveMotors extends OpMode
         //      the setDirection() calls above.
         // Once the correct motors move in the correct direction re-comment this code.
 
-        frontLeftPower  = gamepad1.x ? 0.4 : 0.0;  // X gamepad
-        backLeftPower   = gamepad1.a ? 0.4 : 0.0;  // A gamepad
-        frontRightPower = gamepad1.y ? 0.4 : 0.0;  // Y gamepad
-        backRightPower  = gamepad1.b ? 0.4 : 0.0;  // B gamepad
+        frontLeftPower  = gamepad1.x ? 0.4 : 0.0;  // X or Square gamepad
+        backLeftPower   = gamepad1.a ? 0.4 : 0.0;  // A or X gamepad
+        frontRightPower = gamepad1.y ? 0.4 : 0.0;  // Y or Triangle gamepad
+        backRightPower  = gamepad1.b ? 0.4 : 0.0;  // B or Circle gamepad
 
         // WRITE EFFECTORS
         frontLeftMotor.setPower(frontLeftPower);
@@ -168,17 +168,17 @@ public class TestDriveMotors extends OpMode
         
         // Retrieve motor encoder position
         int frontLeftEncoder = frontLeftMotor.getCurrentPosition();
-        int backLeftEncoder = frontLeftMotor.getCurrentPosition();
-        int frontRightEncoder = frontLeftMotor.getCurrentPosition();
-        int backRightEncoder = frontLeftMotor.getCurrentPosition();
+        int backLeftEncoder = backLeftMotor.getCurrentPosition();
+        int frontRightEncoder = frontRightMotor.getCurrentPosition();
+        int backRightEncoder = backRightMotor.getCurrentPosition();
 
         // UPDATE TELEMETRY
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Front left/right power", "%4.2f, %4.2f", frontLeftPower, frontRightPower);
         telemetry.addData("Back  left/right power", "%4.2f, %4.2f", backLeftPower, backRightPower);
 
-        telemetry.addData("Front left/right encoder ticks", "%i, %i", frontLeftEncoder, frontRightEncoder );
-        telemetry.addData("Back left/right encoder ticks", "%i, %i", backLeftEncoder, backRightEncoder );
+        telemetry.addData("Front left/right encoder ticks", "%s, %s", frontLeftEncoder, frontRightEncoder );
+        telemetry.addData("Back left/right encoder ticks", "%s, %s", backLeftEncoder, backRightEncoder );
         telemetry.update();
     }
 
