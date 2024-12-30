@@ -121,46 +121,16 @@ public class TestDriveMotors extends OpMode
     public void loop() {
         double max;
 
-        // COLLECT INPUTS
-        // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-        double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-        double lateral =  gamepad1.right_stick_x;
-        double yaw     =  gamepad1.left_stick_x * 1.1;
-
-        // DRIVE EQUATIONS
-        // Combine the joystick requests for each axis-motion to determine each wheel's power.
-        // Set up a variable for each drive wheel to save the power level for telemetry.
-        double frontLeftPower  = axial + lateral + yaw;
-        double backLeftPower   = axial - lateral + yaw;
-        double frontRightPower = axial - lateral - yaw;
-        double backRightPower  = axial + lateral - yaw;
-
-        // Normalize the values so no wheel power exceeds 100%
-        // This ensures that the robot maintains the desired motion.
-        max = Math.max(Math.abs(frontLeftPower), Math.abs(backLeftPower));
-        max = Math.max(max, Math.abs(frontRightPower));
-        max = Math.max(max, Math.abs(backRightPower));
-
-        if (max > 1.0) {
-            frontLeftPower  /= max;
-            backLeftPower   /= max;
-            frontRightPower /= max;
-            backRightPower  /= max;
-        }
-
         // Test your motor directions. Each button should make the corresponding motor run FORWARD.
-        //   1) First get all the motors to take to correct positions on the robot
-        //      by adjusting your Robot Configuration if necessary.
-        //   2) Then make sure they run in the correct direction by modifying the
-        //      the setDirection() calls above.
+        //   1) First get all the motors to take to correct positions on the robot by adjusting your Robot Configuration if necessary.
+        //   2) Then make sure they run in the correct direction by modifying the the setDirection() calls above.
         // Once the correct motors move in the correct direction re-comment this code.
+        double frontLeftPower  = gamepad1.x ? 0.4 : 0.0;  // X or Square gamepad
+        double backLeftPower   = gamepad1.a ? 0.4 : 0.0;  // A or X gamepad
+        double frontRightPower = gamepad1.y ? 0.4 : 0.0;  // Y or Triangle gamepad
+        double backRightPower  = gamepad1.b ? 0.4 : 0.0;  // B or Circle gamepad
 
-        frontLeftPower  = gamepad1.x ? 0.4 : 0.0;  // X or Square gamepad
-        backLeftPower   = gamepad1.a ? 0.4 : 0.0;  // A or X gamepad
-        frontRightPower = gamepad1.y ? 0.4 : 0.0;  // Y or Triangle gamepad
-        backRightPower  = gamepad1.b ? 0.4 : 0.0;  // B or Circle gamepad
-
-        // WRITE EFFECTORS
+        // Write effectors
         frontLeftMotor.setPower(frontLeftPower);
         frontRightMotor.setPower(frontRightPower);
         backLeftMotor.setPower(backLeftPower);
@@ -172,7 +142,7 @@ public class TestDriveMotors extends OpMode
         int frontRightEncoder = frontRightMotor.getCurrentPosition();
         int backRightEncoder = backRightMotor.getCurrentPosition();
 
-        // UPDATE TELEMETRY
+        // Update telemetry
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Front left/right power", "%4.2f, %4.2f", frontLeftPower, frontRightPower);
         telemetry.addData("Back  left/right power", "%4.2f, %4.2f", backLeftPower, backRightPower);
