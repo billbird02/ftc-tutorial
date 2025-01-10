@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.competition;
+package org.firstinspires.ftc.teamcode.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -37,19 +37,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /*
  * This file contains an example of an iterative (Non-Linear) "OpMode".
  * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
- * The names of OpModes appear on the menu of the FTC Driver Station.
- * When a selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all iterative OpModes contain.
+ * The names of OpModes appear on the menu of the FTC Driver Station. When a selection is made from
+ * the menu, the corresponding OpMode class is instantiated on the Robot Controller and executed.
  *
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Drive Motor Test", group="Competition")
-
+@TeleOp(name="Drive Motor Test", group="Test")
+//@Disabled
 public class TestDriveMotors extends OpMode
 {
     // Declare OpMode members.
@@ -79,8 +75,10 @@ public class TestDriveMotors extends OpMode
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips.
         // TODO: Make sure all motors are facing the correct direction. Go one at a time.
-        //frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        //backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
+        backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
+        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // Reset the motor encoder so that it reads zero ticks
         frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -89,14 +87,15 @@ public class TestDriveMotors extends OpMode
         backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Turn the motor back on, required if you use STOP_AND_RESET_ENCODER
-        // Note, RUN_WITHOUT_ENCODER does not disable the encoder; instead tells the SDK not to use the motor encoder for built-in velocity control.
+        // Note, RUN_WITHOUT_ENCODER does not disable the encoder; instead tells the SDK not to use the motor encoder
+        // for built-in velocity control.
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        // Notify the driver that initialization is complete.
-        telemetry.addData("Status", "Initialized");
+        // Send telemetry message to signify robot waiting.
+        telemetry.addLine("Robot ready.");
         telemetry.update();
     }
 
@@ -119,36 +118,33 @@ public class TestDriveMotors extends OpMode
      */
     @Override
     public void loop() {
-        double max;
 
-        // Test your motor directions. Each button should make the corresponding motor run FORWARD.
-        //   1) First get all the motors to take to correct positions on the robot by adjusting your Robot Configuration if necessary.
+        // Get number of encoder ticks per rotation for the motor type specified in the Control Hub configuration
+        double ticksPerRotation = frontLeftMotor.getMotorType().getTicksPerRev();
+
+        // Test motor directions. Each button should make the corresponding motor run FORWARD.
+        //   1) First get all the motors to take to correct positions on the robot by adjusting your Robot Controller Configuration, if necessary.
         //   2) Then make sure they run in the correct direction by modifying the the setDirection() calls above.
-        // Once the correct motors move in the correct direction re-comment this code.
-        double frontLeftPower  = gamepad1.x ? 0.4 : 0.0;  // X or Square gamepad
-        double backLeftPower   = gamepad1.a ? 0.4 : 0.0;  // A or X gamepad
-        double frontRightPower = gamepad1.y ? 0.4 : 0.0;  // Y or Triangle gamepad
-        double backRightPower  = gamepad1.b ? 0.4 : 0.0;  // B or Circle gamepad
+        double frontLeftPower  = gamepad1.x ? 0.4 : 0.0;  // X or PS4: Square gamepad
+        double backLeftPower   = gamepad1.a ? 0.4 : 0.0;  // A or PS4: Cross gamepad
+        double frontRightPower = gamepad1.y ? 0.4 : 0.0;  // Y or PS4: Triangle gamepad
+        double backRightPower  = gamepad1.b ? 0.4 : 0.0;  // B or PS4: Circle gamepad
 
         // Write effectors
         frontLeftMotor.setPower(frontLeftPower);
         frontRightMotor.setPower(frontRightPower);
         backLeftMotor.setPower(backLeftPower);
         backRightMotor.setPower(backRightPower);
-        
-        // Retrieve motor encoder position
-        int frontLeftEncoder = frontLeftMotor.getCurrentPosition();
-        int backLeftEncoder = backLeftMotor.getCurrentPosition();
-        int frontRightEncoder = frontRightMotor.getCurrentPosition();
-        int backRightEncoder = backRightMotor.getCurrentPosition();
 
         // Update telemetry
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Front left/right power", "%4.2f, %4.2f", frontLeftPower, frontRightPower);
-        telemetry.addData("Back  left/right power", "%4.2f, %4.2f", backLeftPower, backRightPower);
-
-        telemetry.addData("Front left/right encoder ticks", "%s, %s", frontLeftEncoder, frontRightEncoder );
-        telemetry.addData("Back left/right encoder ticks", "%s, %s", backLeftEncoder, backRightEncoder );
+        telemetry.addData("Encoder ticks per rotation: ", ticksPerRotation);
+        telemetry.addData("Number of rotations: ", frontLeftMotor.getCurrentPosition() / ticksPerRotation);
+        telemetry.addLine();
+        telemetry.addData("Front LEFT power | encoder ", "%4.2f | %s", frontLeftPower, frontLeftMotor.getCurrentPosition());
+        telemetry.addData("Back LEFT power | encoder ", "%4.2f | %s", backLeftPower, backLeftMotor.getCurrentPosition());
+        telemetry.addData("Front RIGHT power | encoder ", "%4.2f | %s", frontRightPower, frontRightMotor.getCurrentPosition());
+        telemetry.addData("Back RIGHT power | encoder ", "%4.2f | %s", backRightPower, backRightMotor.getCurrentPosition());
         telemetry.update();
     }
 
