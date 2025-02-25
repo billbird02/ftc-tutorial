@@ -81,17 +81,22 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 //@Disabled   // comment this out to add to the OpMode list on the Drive Hub
 public class TestSensorIMU extends LinearOpMode
 {
+    private DcMotor frontLeftMotor = null;
+    private DcMotor rearLeftMotor = null;
+    private DcMotor frontRightMotor = null;
+    private DcMotor rearRightMotor = null;
+
     // The IMU sensor object
-    //IMU imu;
+    IMU imu;
 
     @Override public void runOpMode() throws InterruptedException {
 
         // Initialize the hardware variables. Note that the strings specified here as parameters
         // must match the names assigned in the robot controller configuration.
-        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("front_left");
-        DcMotor rearLeftMotor = hardwareMap.dcMotor.get("rear_left");
-        DcMotor frontRightMotor = hardwareMap.dcMotor.get("front_right");
-        DcMotor rearRightMotor = hardwareMap.dcMotor.get("rear_right");
+        frontLeftMotor = hardwareMap.dcMotor.get("front_left");
+        rearLeftMotor = hardwareMap.dcMotor.get("rear_left");
+        frontRightMotor = hardwareMap.dcMotor.get("front_right");
+        rearRightMotor = hardwareMap.dcMotor.get("rear_right");
 
         // Set drive speed limiter (full power = 1.0)
         final double DRIVE_SPEED_LIMITER = 0.6; // reduce drive rate to 60% of maximum
@@ -116,7 +121,7 @@ public class TestSensorIMU extends LinearOpMode
 
         // Retrieve and initialize the IMU.
         // This expects the IMU to be configured in the REV Hub and named "imu".
-        IMU imu = hardwareMap.get(IMU.class, "imu");
+        imu = hardwareMap.get(IMU.class, "imu");
 
         /* Define how the hub is mounted on the robot to get the correct Yaw, Pitch and Roll values.
          *
@@ -154,31 +159,14 @@ public class TestSensorIMU extends LinearOpMode
         // Run until the driver presses stop
         while (opModeIsActive()) {
 
-            // DRIVE = left joystick y axis (robot centric)
-            double drive = -gamepad1.left_stick_y;  // set as negative so pushing joystick forward is a positive value
+            // FORWARD/BACKWARD or LONGITUDINAL = left joystick y axis (robot centric)
+            double forward = -gamepad1.left_stick_y;  // set as negative so pushing joystick forward is a positive value
             // STRAFE = left joystick x axis
             double strafe = gamepad1.left_stick_x * 1.1;    // multiplier to counteract imperfect strafing, adjustable based on driver preference
             // TURN = right joystick x axis
             double turn = gamepad1.right_stick_x;
 
-            // Determine the largest motor power (absolute value) or 1. This ensures all the powers are scaled proportionally,
-            // but only if at least one is out of the range [-1.0, 1.0].
-            double kScaleFactor = Math.max(Math.abs(drive) + Math.abs(strafe) + Math.abs(turn), 1);
-
-            // The left Y component (y or DRIVE) is added to all wheels, the right X (rx or TURN) is added to the left wheels and subtracted from
-            // the right, and the left X component (x or STRAFE) is added to diagonal motors pairs (i.e., left front and right rear) and subtracted
-            // from the opposite diagonal pair (i.e., right front and left rear).
-            // see mecanum drive reference: https://cdn11.bigcommerce.com/s-x56mtydx1w/images/stencil/original/products/2234/13280/3209-0001-0007-Product-Insight-2__06708__33265.1725633323.png?c=1
-            double frontLeftPower = drive + turn + strafe / kScaleFactor;
-            double rearLeftPower = drive + turn - strafe / kScaleFactor;
-            double frontRightPower = drive - turn - strafe / kScaleFactor;
-            double rearRightPower = drive - turn + strafe / kScaleFactor;
-
-            // Set scaled motor powers (with limiter).
-            frontLeftMotor.setPower(frontLeftPower * DRIVE_SPEED_LIMITER);
-            rearLeftMotor.setPower(rearLeftPower * DRIVE_SPEED_LIMITER);
-            frontRightMotor.setPower(frontRightPower * DRIVE_SPEED_LIMITER);
-            rearRightMotor.setPower(rearRightPower * DRIVE_SPEED_LIMITER);
+            moveRobot(forward, strafe, turn, 1.0);  // speedLimiter reduces movement speed to a specified % of maximum (1.0).
 
             telemetry.addData("Hub orientation", "Logo=%s   USB=%s\n ", logoDirection, usbDirection);
 
@@ -202,5 +190,29 @@ public class TestSensorIMU extends LinearOpMode
             telemetry.addData("Roll (Y) velocity", "%.2f Deg/Sec", angularVelocity.yRotationRate);
             telemetry.update();
         }
+    }
+
+    public void moveRobot(double y, double x, double rx, double speedLimiter) {
+        // Function to move robot.
+        // Positive values of y move forward, positive values of x strafe to the right, positive values of rx rotate clockwise.
+
+        // Determine the largest motor power (absolute value) or 1. This ensures all the powers are scaled proportionally,
+        // but only if at least one is out of the range [-1.0, 1.0].
+        double kScaleFactor = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+
+        // The left Y component (y or LONGITUDINAL) is added to all wheels, the left X component (x or STRAFE) is added
+        // to diagonal motors pairs (i.e., left front and right rear) and subtracted from the opposite diagonal pair
+        // (i.e., left front and right rear), and the right X (rx or TURN) is added to the left wheels and subtracted from the right.
+        // See mecanum drive reference: https://cdn11.bigcommerce.com/s-x56mtydx1w/images/stencil/original/products/2234/13280/3209-0001-0007-Product-Insight-2__06708__33265.1725633323.png?c=1
+        double frontLeftPower = (y + x + rx) / kScaleFactor;
+        double rearLeftPower = (y - x + rx) / kScaleFactor;
+        double frontRightPower = (y - x - rx) / kScaleFactor;
+        double rearRightPower = (y + x - rx) / kScaleFactor;
+
+        // Set scaled motor powers (with limiter).
+        frontLeftMotor.setPower(frontLeftPower * speedLimiter);
+        rearLeftMotor.setPower(rearLeftPower * speedLimiter);
+        frontRightMotor.setPower(frontRightPower * speedLimiter);
+        rearRightMotor.setPower(rearRightPower * speedLimiter);
     }
 }
