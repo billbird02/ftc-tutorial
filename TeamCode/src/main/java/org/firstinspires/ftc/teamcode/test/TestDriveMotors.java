@@ -53,9 +53,9 @@ public class TestDriveMotors extends OpMode
 
     // Declare drive motors
     private DcMotor frontLeftMotor = null;
-    private DcMotor backLeftMotor = null;
+    private DcMotor rearLeftMotor = null;
     private DcMotor frontRightMotor = null;
-    private DcMotor backRightMotor = null;
+    private DcMotor rearRightMotor = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -67,32 +67,30 @@ public class TestDriveMotors extends OpMode
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
         frontLeftMotor  = hardwareMap.get(DcMotor.class, "front_left");
-        backLeftMotor  = hardwareMap.get(DcMotor.class, "back_left");
+        rearLeftMotor  = hardwareMap.get(DcMotor.class, "rear_left");
         frontRightMotor = hardwareMap.get(DcMotor.class, "front_right");
-        backRightMotor = hardwareMap.get(DcMotor.class, "back_right");
+        rearRightMotor = hardwareMap.get(DcMotor.class, "rear_right");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips.
-        // TODO: Make sure all motors are facing the correct direction. Go one at a time.
-        frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
-        backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
-        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
-        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        // TODO: Make sure all motors are facing the correct direction.
+        //frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        //rearLeftMotor.setDirection(DcMotor.Direction.REVERSE);
 
         // Reset the motor encoder so that it reads zero ticks
         frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rearLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rearRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Turn the motor back on, required if you use STOP_AND_RESET_ENCODER
         // Note, RUN_WITHOUT_ENCODER does not disable the encoder; instead tells the SDK not to use the motor encoder
         // for built-in velocity control.
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rearLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rearRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Send telemetry message to signify robot waiting.
         telemetry.addLine("Robot ready.");
@@ -125,26 +123,35 @@ public class TestDriveMotors extends OpMode
         // Test motor directions. Each button should make the corresponding motor run FORWARD.
         //   1) First get all the motors to take to correct positions on the robot by adjusting your Robot Controller Configuration, if necessary.
         //   2) Then make sure they run in the correct direction by modifying the the setDirection() calls above.
-        double frontLeftPower  = gamepad1.x ? 0.4 : 0.0;  // X or PS4: Square gamepad
-        double backLeftPower   = gamepad1.a ? 0.4 : 0.0;  // A or PS4: Cross gamepad
-        double frontRightPower = gamepad1.y ? 0.4 : 0.0;  // Y or PS4: Triangle gamepad
-        double backRightPower  = gamepad1.b ? 0.4 : 0.0;  // B or PS4: Circle gamepad
+        double frontLeftPower  = gamepad1.x ? 0.4 : 0.0;  // X or PS4: □ (square)
+        double rearLeftPower   = gamepad1.a ? 0.4 : 0.0;  // A or PS4: X (cross)
+        double frontRightPower = gamepad1.y ? 0.4 : 0.0;  // Y or PS4: ∆ (triangle)
+        double rearRightPower  = gamepad1.b ? 0.4 : 0.0;  // B or PS4: O (circle)
 
         // Write effectors
         frontLeftMotor.setPower(frontLeftPower);
         frontRightMotor.setPower(frontRightPower);
-        backLeftMotor.setPower(backLeftPower);
-        backRightMotor.setPower(backRightPower);
+        rearLeftMotor.setPower(rearLeftPower);
+        rearRightMotor.setPower(rearRightPower);
 
         // Update telemetry
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Encoder ticks per rotation: ", ticksPerRotation);
         telemetry.addData("Number of rotations: ", frontLeftMotor.getCurrentPosition() / ticksPerRotation);
-        telemetry.addLine();
-        telemetry.addData("Front LEFT power | encoder ", "%4.2f | %s", frontLeftPower, frontLeftMotor.getCurrentPosition());
-        telemetry.addData("Back LEFT power | encoder ", "%4.2f | %s", backLeftPower, backLeftMotor.getCurrentPosition());
-        telemetry.addData("Front RIGHT power | encoder ", "%4.2f | %s", frontRightPower, frontRightMotor.getCurrentPosition());
-        telemetry.addData("Back RIGHT power | encoder ", "%4.2f | %s", backRightPower, backRightMotor.getCurrentPosition());
+        
+        telemetry.addLine()
+                .addData("FrontLeft Power", "%4.2f", frontLeftPower)
+                .addData("FrontLeft Encoder ", "%s", frontLeftMotor.getCurrentPosition());
+        telemetry.addLine()
+                .addData("RearLeft Power", "%4.2f", rearLeftPower)
+                .addData("RearLeft Encoder ", "%s", rearLeftMotor.getCurrentPosition());
+        telemetry.addLine()
+                .addData("FrontRight Power", "%4.2f", frontRightPower)
+                .addData("FrontRight Encoder ", "%s", frontRightMotor.getCurrentPosition());
+        telemetry.addLine()
+                .addData("RearRight Power", "%4.2f", rearRightPower)
+                .addData("RearRight Encoder ", "%s", rearRightMotor.getCurrentPosition());
+        
         telemetry.update();
     }
 
