@@ -202,7 +202,7 @@ public class TestSensorIMU extends LinearOpMode
 
         // The left Y component (y or LONGITUDINAL) is added to all wheels, the left X component (x or STRAFE) is added
         // to diagonal motors pairs (i.e., left front and right rear) and subtracted from the opposite diagonal pair
-        // (i.e., left front and right rear), and the right X (rx or TURN) is added to the left wheels and subtracted from the right.
+        // (i.e., right front and left rear), and the right X (rx or TURN) is added to the left wheels and subtracted from the right.
         // See mecanum drive reference: https://cdn11.bigcommerce.com/s-x56mtydx1w/images/stencil/original/products/2234/13280/3209-0001-0007-Product-Insight-2__06708__33265.1725633323.png?c=1
         double frontLeftPower = (y + x + rx) / kScaleFactor;
         double rearLeftPower = (y - x + rx) / kScaleFactor;
